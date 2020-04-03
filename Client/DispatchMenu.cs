@@ -61,8 +61,26 @@ namespace EmergencyDispatchSystem.Client
                 callLogMenu.ClearMenuItems();
                 foreach (EmergencyCall ec in CallHelper.GetAllCalls())
                 {
+                    // Create the menu item, add it to the call log menu
                     MenuItem currCallItem = new MenuItem("[" + ec.GetTime() + "] [" + MessageHelper.ConvertNotificationTypeToString(ec.GetServiceType()) + "] ~w~" + ec.GetMessage());
                     callLogMenu.AddMenuItem(currCallItem);
+
+                    // Create a sub menu for the current call
+                    Menu currentCallMenu = new Menu("Dispatch Call at " + ec.GetTime());
+                    MenuController.AddSubmenu(callLogMenu, currentCallMenu);
+
+                    // Set up items for current call menu
+                    currentCallMenu.AddMenuItem(new MenuItem("Set waypoint to location"));
+
+                    // Bind current call sub menu to the dispatch menu to allow it to be opened
+                    MenuController.BindMenuItem(callLogMenu, currentCallMenu, currCallItem);
+
+                    // Event handlers for the call menu's items
+                    currentCallMenu.OnItemSelect += (_submenu, _item, _index) =>
+                    {
+                        EmergencyCall selectedCall = CallHelper.GetAllCalls()[_index];
+                        SetNewWaypoint(selectedCall.GetLocation().X, selectedCall.GetLocation().Y);
+                    };
                 }
             };
 
