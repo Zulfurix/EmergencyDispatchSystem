@@ -58,6 +58,7 @@ namespace EmergencyDispatchSystem.Client
             // Events
             callLogMenu.OnMenuOpen += (_menu) =>
             {
+                callLogMenu.ClearMenuItems();
                 foreach (EmergencyCall ec in CallHelper.GetAllCalls())
                 {
                     MenuItem currCallItem = new MenuItem("[" + ec.GetTime() + "] [" + MessageHelper.ConvertNotificationTypeToString(ec.GetServiceType()) + "] ~w~" + ec.GetMessage());
