@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using CitizenFX.Core;
+using static CitizenFX.Core.Native.API;
 
 namespace EmergencyDispatchSystem.Server
 {
@@ -8,13 +10,7 @@ namespace EmergencyDispatchSystem.Server
     {
         public ServerMain()
         {
-            Debug.WriteLine("Hi from EmergencyDispatchSystem.Server!");
-        }
-
-        [Command("hello_server")]
-        public void HelloServer()
-        {
-            Debug.WriteLine("Sure, hello.");
+            Debug.WriteLine("Emergency Dispatch System by Zulfurix");
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using CitizenFX.Core;
 using static CitizenFX.Core.Native.API;
@@ -9,14 +10,23 @@ namespace EmergencyDispatchSystem.Client
     {
         public ClientMain()
         {
-            Debug.WriteLine("Hi from EmergencyDispatchSystem.Client!");
+            Debug.WriteLine("Emergency Dispatch System by Zulfurix");
+            EventHandlers["onClientResourceStart"] += new Action<string>(OnClientResourceStart);
+        }
+
+        public void OnClientResourceStart(string resourceName)
+        {
+            if (GetCurrentResourceName() != resourceName) return;
+
+            RegisterCommand("911", new Action<int, List<object>, string>((source, args, raw) =>
+            {
+                TriggerEvent("EDS:OpenCallMenu");
+            }), false);
         }
 
         [Tick]
         public Task OnTick()
         {
-            DrawRect(0.5f, 0.5f, 0.5f, 0.5f, 255, 255, 255, 150);
-
             return Task.FromResult(0);
         }
     }
