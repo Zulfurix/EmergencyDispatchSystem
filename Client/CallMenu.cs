@@ -8,6 +8,9 @@ namespace EmergencyDispatchSystem.Client
 {
     class CallMenu : BaseScript
     {
+        private string inputValue = "";
+        private DispatchNotificationType selectedService;
+
         public CallMenu()
         {
             ///////////////////////////////////////////////////////////////
@@ -16,6 +19,8 @@ namespace EmergencyDispatchSystem.Client
 
             // Align the menu to the left side of the screen
             MenuController.MenuAlignment = MenuController.MenuAlignmentOption.Left;
+
+            MenuController.MenuToggleKey = Control.VehicleBikeWings;
 
             // Create the first screen of the menu then add it to the menu controller
             Menu mainCallMenu = new Menu("Emergency Services", "What emergency service do you require?");
@@ -30,15 +35,15 @@ namespace EmergencyDispatchSystem.Client
             });
 
             // Ambulance
-            mainCallMenu.AddMenuItem(new MenuItem("Ambulance", "Request police assistance")
+            mainCallMenu.AddMenuItem(new MenuItem("Ambulance", "Request EMS assistance")
             {
-                Enabled = false
+                Enabled = true
             });
 
             // Fire
-            mainCallMenu.AddMenuItem(new MenuItem("Fire", "Request police assistance")
+            mainCallMenu.AddMenuItem(new MenuItem("Fire", "Request fire service assistance")
             {
-                Enabled = false
+                Enabled = true
             });
 
             // Events
@@ -49,10 +54,49 @@ namespace EmergencyDispatchSystem.Client
                 switch (_index)
                 {
                     case 0:
-                        Debug.WriteLine("Dispatch police!");
+                        DisplayOnscreenKeyboard(0, "What is your emergency?", "", "", "", "", "", 128);
+                        selectedService = DispatchNotificationType.POLICE;
+                        Tick += GetUserDispatchMessage;
+                        break;
+                    case 1:
+                        DisplayOnscreenKeyboard(0, "What is your emergency?", "", "", "", "", "", 128);
+                        selectedService = DispatchNotificationType.AMBULANCE;
+                        Tick += GetUserDispatchMessage;
+                        break;
+                    case 2:
+                        DisplayOnscreenKeyboard(0, "What is your emergency?", "", "", "", "", "", 128);
+                        selectedService = DispatchNotificationType.FIRE;
+                        Tick += GetUserDispatchMessage;
                         break;
                 }
             };
+        }
+
+        public Task GetUserDispatchMessage()
+        {
+            HideHudAndRadarThisFrame();
+            if (UpdateOnscreenKeyboard() == 3)
+            {
+                Tick -= GetUserDispatchMessage;
+            }
+            else if (UpdateOnscreenKeyboard() == 1)
+            {
+                inputValue = GetOnscreenKeyboardResult();
+                if (inputValue.Length > 0)
+                {
+                    TriggerServerEvent("EDS:DisplayDispatchNotificationForAll", (int)selectedService, inputValue);
+                    Tick -= GetUserDispatchMessage;
+                }
+                else
+                {
+                    DisplayOnscreenKeyboard(0, "What is your emergency?", "", "", "", "", "", 128);
+                }
+            }
+            else if (UpdateOnscreenKeyboard() == 1)
+            {
+                Tick -= GetUserDispatchMessage;
+            }
+            return Task.FromResult(0);
         }
     }
 }
