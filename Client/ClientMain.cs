@@ -22,6 +22,11 @@ namespace EmergencyDispatchSystem.Client
             {
                 TriggerEvent("EDS:OpenCallMenu");
             }), false);
+
+            RegisterCommand("dispatch", new Action<int, List<object>, string>((source, args, raw) =>
+            {
+                TriggerEvent("EDS:OpenDispatchMenu");
+            }), false);
         }
 
         [Tick]

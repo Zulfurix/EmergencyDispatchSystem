@@ -10,12 +10,12 @@ namespace EmergencyDispatchSystem.Server
     {
         public MessageHelper()
         {
-            EventHandlers["EDS:DisplayDispatchNotificationForAll"] += new Action<int, string>(DisplayDispatchNotificationForAll);
+            EventHandlers["EDS:DisplayDispatchNotificationForAll"] += new Action<int, string, Vector2>(DisplayDispatchNotificationForAll);
         }
 
-        public void DisplayDispatchNotificationForAll(int serviceType, string message)
+        public void DisplayDispatchNotificationForAll(int serviceType, string message, Vector2 callLocation)
         {
-            TriggerClientEvent("EDS:DisplayDispatchNotification", serviceType, message);
+            TriggerClientEvent("EDS:DisplayDispatchNotification", serviceType, message, callLocation);
         }
     }
 }

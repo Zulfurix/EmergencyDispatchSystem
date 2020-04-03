@@ -84,7 +84,7 @@ namespace EmergencyDispatchSystem.Client
                 inputValue = GetOnscreenKeyboardResult();
                 if (inputValue.Length > 0)
                 {
-                    TriggerServerEvent("EDS:DisplayDispatchNotificationForAll", (int)selectedService, inputValue);
+                    TriggerServerEvent("EDS:DisplayDispatchNotificationForAll", (int)selectedService, inputValue, new Vector2(Game.PlayerPed.Position.X, Game.PlayerPed.Position.Y));
                     Tick -= GetUserDispatchMessage;
                 }
                 else

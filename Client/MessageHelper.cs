@@ -10,15 +10,21 @@ namespace EmergencyDispatchSystem.Client
     {
         public MessageHelper()
         {
-            EventHandlers["EDS:DisplayDispatchNotification"] += new Action<int, string>(DisplayDispatchNotification);
+            EventHandlers["EDS:DisplayDispatchNotification"] += new Action<int, string, Vector2>(DisplayDispatchNotification);
         }
 
-        public static void DisplayDispatchNotification(int notificationType, string dispatchMessage)
+        public static void DisplayDispatchNotification(int notificationType, string dispatchMessage, Vector2 callLocation)
         {
+            // Get time call was made
             string recordedTime = GetClockHours() + ":" + GetClockMinutes();
+
+            // Create the call object
+            new EmergencyCall(callLocation, dispatchMessage, (DispatchNotificationType)notificationType, recordedTime);
+
+            // Output information as notification
             SetNotificationTextEntry("STRING");
             AddTextComponentString(dispatchMessage);
-            SetNotificationMessageClanTag_2("CHAR_CALL911", "CHAR_CALL911", false, 7, "~y~Dispatch", ConvertNotificationTypeToString((DispatchNotificationType)notificationType) + " (" + recordedTime + ")", 1.0f, "", 8, 1);
+            SetNotificationMessageClanTag_2("CHAR_CALL911", "CHAR_CALL911", false, 7, "~y~Dispatch", ConvertNotificationTypeToString((DispatchNotificationType)notificationType) + " ~w~(" + recordedTime + ")", 1.0f, "", 8, 1);
             DrawNotification(false, true);
         }
 
@@ -27,11 +33,11 @@ namespace EmergencyDispatchSystem.Client
             switch (type)
             {
                 case DispatchNotificationType.POLICE:
-                    return "Police";
+                    return "~b~Police";
                 case DispatchNotificationType.AMBULANCE:
-                    return "EMS";
+                    return "~r~E~w~M~r~S";
                 case DispatchNotificationType.FIRE:
-                    return "Fire";
+                    return "~r~Fire";
             }
             return "Error";
         }
